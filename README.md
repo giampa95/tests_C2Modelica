@@ -1,7 +1,7 @@
 Simple tests for C code integration in Open Modelica.
 
 List of tests:
-- Test 01: Integration of LIBC <cmath> "pow" function.
+- Test 01: Integration of libc cmath "pow" function.
 - Test 02: Integration of a custom C implementation of the ReLu function, passing the output variable by value.
 - Test 03: Integration of a custom C implementation of the ReLu function, passing the output variable by pointer.
 
