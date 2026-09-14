@@ -1,4 +1,4 @@
-Simple tests for C code integration in Open Modelica.
+Simple tests for C code integration in OpenModelica.
 
 List of tests:
 - Test 01: Integration of libc cmath "pow" function.
