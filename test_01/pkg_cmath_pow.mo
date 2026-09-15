@@ -42,7 +42,7 @@ block sys_cmath_pow     // continuous-time signals
 end sys_cmath_pow;
 
 model tb_sys_cmath_pow        
-// continuous-time signals
+
   sys_cmath_pow system_pow annotation(
       Placement(transformation(origin = {10, 0}, extent = {{-50, -50}, {50, 50}})));
     
