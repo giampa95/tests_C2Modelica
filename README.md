@@ -5,7 +5,7 @@ List of tests:
 - Test 02: Integration of a custom C implementation of the ReLu function returning the result by value.
 - Test 03: Integration of a custom C implementation of the ReLu function returning the result by pointer.
 - Test 04: Integration of a pre-compiled x86-64 static library (.lib), obtained by a C implementation of the ReLu function returning the result by value.
-- Test 05: Integration of a pre-compiled x86-64 dynamic library (.dll), obtained by a C implmentation of an AUTOSAR-Classic application software.
+- Test 05: Integration of a pre-compiled x86-64 dynamic library (.dll), obtained by a C implmentation of an AUTOSAR-Classic-inspired application software.
 
 List of tests to be done:
 - None / not planned.
