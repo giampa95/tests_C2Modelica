@@ -15,8 +15,12 @@ Object files are platform-specific: run `make clean` before switching from
 ## Building manually with `gcc` in Windows
 
 ```sh
+
 cd Resources/C
 mkdir -p ../Build
+
+# Always run 'make clean' (or delete ../Build/*.o and appsw.dll) first, and after ANY change to
+# src/*.c or include/*.h, rebuild the DLL -- Modelica will keep loading the stale one otherwise.
 
 gcc -std=c99 -Wall -Wextra -O2 -fPIC -Iinclude -c src/datatypes.c        -o ../Build/datatypes.o
 gcc -std=c99 -Wall -Wextra -O2 -fPIC -Iinclude -c src/interfaces.c       -o ../Build/interfaces.o
@@ -25,6 +29,6 @@ gcc -std=c99 -Wall -Wextra -O2 -fPIC -Iinclude -c src/scheduler_events.c -o ../B
 gcc -std=c99 -Wall -Wextra -O2 -fPIC -Iinclude -c src/swc1_runnables.c   -o ../Build/swc1_runnables.o
 gcc -std=c99 -Wall -Wextra -O2 -fPIC -Iinclude -c src/swc2_runnables.c   -o ../Build/swc2_runnables.o
 gcc -std=c99 -Wall -Wextra -O2 -fPIC -Iinclude -c src/appsw.c            -o ../Build/appsw.o
+gcc -shared -o ../Build/appsw.dll ../Build/*.o
 
-gcc -shared -o ../Build/libappsw.so ../Build/*.o
 ```

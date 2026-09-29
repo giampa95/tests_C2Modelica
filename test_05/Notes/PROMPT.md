@@ -98,13 +98,13 @@ The C library is pre-compiled (no class namespace needed per application instanc
 2. **Destructor (`appsw_free`)**:
    - Handles memory cleanup and teardown.
 3. **Step Function (`doStep`)**:
-   - Signature: `doStep(const int events[3], double inp_SWC1_value, double inp_SWC1_gain, double *outp_SWC1_valueGained, double *outp_SWC2_counter)`
+   - Signature: `doStep(const int events[3], int inp_SWC1_value, int inp_SWC1_gain, int *outp_SWC1_valueGained, int *outp_SWC2_counter)`
    - Execution Sequence:
      1. Cast input double arguments to target C types and assign to global interface variables (`gSWC1_value`, `gSWC1_gain`).
      2. Process `events` vector (array/bitmask representing `[eventR, eventG, eventClockA]`).
      3. Invoke `Mng_*` functions according to priority rules to populate the runnable queue.
      4. Execute `runRunnables()` to flush and run all queued tasks.
-     5. Cast outputs (`gSWC1_valueGained`, `gSWC2_counter`) to `double` and write to output pointers.
+     5. Cast outputs (`gSWC1_valueGained`, `gSWC2_counter`) and write to output pointers.
 
 ---
 

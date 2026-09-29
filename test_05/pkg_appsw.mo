@@ -44,10 +44,10 @@ package pkg_appsw
          instant are handled together, in a single call. Modelica has no
          unsigned integer type, so this is a plain (non-negative, by
          convention) Integer - see EventMaskType in datatypes.h.";
-      input Real R_SWC1_value "Value input read by SWC1.";
-      input Real R_SWC1_gain "Gain input read by SWC1.";
-      output Real P_SWC1_valueGained "SWC1_value * SWC1_gain (SWC1's provided output).";
-      output Real PR_SWC2_counter
+      input Integer R_SWC1_value "Value input read by SWC1.";
+      input Integer R_SWC1_gain "Gain input read by SWC1.";
+      output Integer P_SWC1_valueGained "SWC1_value * SWC1_gain (SWC1's provided output).";
+      output Integer PR_SWC2_counter
         "SWC2's free-running counter, provided as a Real (its native type
          on the C side is uint8).";
       external "C" doStep(eventFlags, R_SWC1_value, R_SWC1_gain, P_SWC1_valueGained, PR_SWC2_counter)
@@ -59,11 +59,11 @@ package pkg_appsw
 
 
   block sys_appsw "Block model of the App SW. Wraps class_appsw with the event logic
-         needed to drive it from a Modelica simulation."         // discrete-time signals
+         needed to drive it from a Modelica simulation."                     // discrete-time signals
     // --- Data Inputs ---
-    Modelica.Blocks.Interfaces.RealInput R_SWC1_value "Value input, forwarded to the App SW's R_SWC1_value on every reactivation." annotation(
+    Modelica.Blocks.Interfaces.IntegerInput R_SWC1_value "Value input, forwarded to the App SW's R_SWC1_value on every reactivation." annotation(
       Placement(transformation(origin = {-100, 30}, extent = {{-10, -10}, {10, 10}}), iconTransformation(origin = {-100, 34}, extent = {{-10, -10}, {10, 10}})));
-    Modelica.Blocks.Interfaces.RealInput R_SWC1_gain "Gain input, forwarded to the App SW's R_SWC1_gain on every reactivation." annotation(
+    Modelica.Blocks.Interfaces.IntegerInput R_SWC1_gain "Gain input, forwarded to the App SW's R_SWC1_gain on every reactivation." annotation(
       Placement(transformation(origin = {-100, -30}, extent = {{-10, -10}, {10, 10}}), iconTransformation(origin = {-100, -34}, extent = {{-10, -10}, {10, 10}})));
     // --- Trigger / Event Inputs ---
     Modelica.Blocks.Interfaces.BooleanInput eventClockA "Rising edge requests an eventClockA reactivation (periodic clock trigger)." annotation(
@@ -73,9 +73,9 @@ package pkg_appsw
     Modelica.Blocks.Interfaces.BooleanInput eventR "Rising edge requests an eventR reactivation (SWC1_ResetGain, SWC2_ResetCounter)." annotation(
       Placement(transformation(origin = {50, 100}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
     // --- Data Outputs ---
-    discrete Modelica.Blocks.Interfaces.RealOutput P_SWC1_valueGained "SWC1's computed value*gain." annotation(
+    discrete Modelica.Blocks.Interfaces.IntegerOutput P_SWC1_valueGained "SWC1's computed value*gain." annotation(
       Placement(transformation(origin = {100, 30}, extent = {{-10, -10}, {10, 10}}), iconTransformation(origin = {100, 34}, extent = {{-10, -10}, {10, 10}})));
-    discrete Modelica.Blocks.Interfaces.RealOutput PR_SWC2_counter "SWC2's free-running counter (as Real)." annotation(
+    discrete Modelica.Blocks.Interfaces.IntegerOutput PR_SWC2_counter "SWC2's free-running counter (as Real)." annotation(
       Placement(transformation(origin = {100, -30}, extent = {{-10, -10}, {10, 10}}), iconTransformation(origin = {100, -34}, extent = {{-10, -10}, {10, 10}})));
   protected
     constant Integer EVENT_CLOCKA_BIT = 1 "Must match EVENT_CLOCKA_BIT in Resources/C/include/scheduler_events.h.";
@@ -107,49 +107,95 @@ package pkg_appsw
     "Testbench for sys_appsw: exercises value/gain inputs and all three event
      requests (eventClockA, eventG, eventR)."
 
-    sys_appsw sys_appsw_01
-      annotation(Placement(transformation(origin = {20, -20}, extent = {{-72, -72}, {72, 72}})));
-
     Modelica.Blocks.Sources.Ramp value_source(height = 9, duration = 8, offset = 1, startTime = 0)
       "SWC1's value input: ramps from 1 to 10 over the simulation."
-      annotation(Placement(transformation(origin = {-110, 0}, extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {-82, -20}, extent = {{-10, -10}, {10, 10}})));
 
     Modelica.Blocks.Sources.Step gain_source(height = 2, offset = 1, startTime = 3.2)
       "SWC1's gain input: 1 before t=3s, 3 afterwards (only takes effect
        once latched by the next eventG)."
-      annotation(Placement(transformation(origin = {-110, -40}, extent = {{-10, -10}, {10, 10}})));
+      annotation(Placement(transformation(origin = {-82, -60}, extent = {{-10, -10}, {10, 10}})));
   
     Modelica.Blocks.Sources.BooleanPulse eventClockA_source(period = 0.5, startTime = 0.5, width = 50) 
-      annotation(Placement(transformation(origin = {-10, 70}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+      annotation(Placement(transformation(origin = {58, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   
     Modelica.Blocks.Sources.BooleanPulse eventG_source(period = 1.5, width = 5, startTime = 0.2)
-      annotation(Placement(transformation(origin = {20, 70}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+      annotation(Placement(transformation(origin = {88, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
 
     Modelica.Blocks.Sources.BooleanStep eventR_source(startTime = 6.05)
-      annotation(Placement(transformation(origin = {50, 70}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
+      annotation(Placement(transformation(origin = {118, 50}, extent = {{-10, -10}, {10, 10}}, rotation = -90)));
   Modelica.Blocks.Discrete.Sampler sampler1(samplePeriod = 0.5) annotation(
-      Placement(transformation(origin = {-70, 0}, extent = {{-10, -10}, {10, 10}})));
+      Placement(transformation(origin = {-42, -20}, extent = {{-10, -10}, {10, 10}})));
   Modelica.Blocks.Discrete.Sampler sampler2(samplePeriod = 0.5) annotation(
-      Placement(transformation(origin = {-70, -40}, extent = {{-10, -10}, {10, 10}})));
+      Placement(transformation(origin = {-42, -60}, extent = {{-10, -10}, {10, 10}})));
+  RealToConfigurableInteger realToConfigurableInteger1(nBits = 32, saturate = true)  annotation(
+      Placement(transformation(origin = {-2, -20}, extent = {{-10, -10}, {10, 10}})));
+  RealToConfigurableInteger realToConfigurableInteger2(nBits = 32, saturate = true)  annotation(
+      Placement(transformation(origin = {-2, -60}, extent = {{-10, -10}, {10, 10}})));
+  sys_appsw sys_appsw_01 annotation(
+      Placement(transformation(origin = {88, -40}, extent = {{-72, -72}, {72, 72}})));
   equation
     connect(value_source.y, sampler1.u) annotation(
-      Line(points = {{-98, 0}, {-82, 0}}, color = {0, 0, 127}));
+      Line(points = {{-71, -20}, {-55, -20}}, color = {0, 0, 127}));
     connect(sampler2.u, gain_source.y) annotation(
-      Line(points = {{-82, -40}, {-98, -40}}, color = {0, 0, 127}));
-    connect(sys_appsw_01.R_SWC1_gain, sampler2.y) annotation(
-      Line(points = {{-40, -40}, {-58, -40}}, color = {0, 0, 127}));
-    connect(sampler1.y, sys_appsw_01.R_SWC1_value) annotation(
-      Line(points = {{-58, 0}, {-40, 0}}, color = {0, 0, 127}));
-    connect(eventClockA_source.y, sys_appsw_01.eventClockA) annotation(
-      Line(points = {{-10, 60}, {-10, 40}}, color = {255, 0, 255}));
-    connect(eventG_source.y, sys_appsw_01.eventG) annotation(
-      Line(points = {{20, 60}, {20, 40}}, color = {255, 0, 255}));
-    connect(eventR_source.y, sys_appsw_01.eventR) annotation(
-      Line(points = {{50, 59}, {50, 40}}, color = {255, 0, 255}));
+      Line(points = {{-54, -60}, {-70, -60}}, color = {0, 0, 127}));
+  connect(eventClockA_source.y, sys_appsw_01.eventClockA) annotation(
+      Line(points = {{58, 39}, {58, 19}}, color = {255, 0, 255}));
+  connect(eventG_source.y, sys_appsw_01.eventG) annotation(
+      Line(points = {{88, 39}, {88, 19}}, color = {255, 0, 255}));
+  connect(eventR_source.y, sys_appsw_01.eventR) annotation(
+      Line(points = {{118, 39}, {118, 20}}, color = {255, 0, 255}));
+    connect(realToConfigurableInteger1.u, sampler1.y) annotation(
+      Line(points = {{-13, -20}, {-31, -20}}, color = {0, 0, 127}));
+    connect(realToConfigurableInteger2.u, sampler2.y) annotation(
+      Line(points = {{-13, -60}, {-31, -60}}, color = {0, 0, 127}));
+  connect(realToConfigurableInteger1.y, sys_appsw_01.R_SWC1_value) annotation(
+      Line(points = {{9, -20}, {28, -20}}, color = {255, 127, 0}));
+  connect(realToConfigurableInteger2.y, sys_appsw_01.R_SWC1_gain) annotation(
+      Line(points = {{9, -60}, {28, -60}}, color = {255, 127, 0}));
     annotation(
       experiment(StartTime = 0, StopTime = 10, Tolerance = 1e-06, Interval = 0.01),
-      Diagram(coordinateSystem(extent = {{-120, 80}, {100, -100}})));
+      Diagram(coordinateSystem(extent = {{-100, 120}, {160, -160}})));
   end tb_sys_appsw;
+
+  block RealToConfigurableInteger "Casts a Real signal to an N-bit Integer with overflow wrapping or saturation"
+  
+    parameter Integer nBits = 16 "Bit width (e.g., 8, 16, 32)";
+    parameter Boolean isSigned = true "True = Signed, False = Unsigned";
+    parameter Boolean saturate = false "True = Clamp, False = Wrap around";
+  
+    Modelica.Blocks.Interfaces.RealInput u "Continuous real input signal" annotation(
+      Placement(transformation(extent={{-120, -10}, {-100, 10}})));
+    Modelica.Blocks.Interfaces.IntegerOutput y "Configured N-bit integer output signal" annotation(
+      Placement(transformation(extent={{100, -10}, {120, 10}})));
+  
+  protected
+    // Guard against 32-bit signed Integer overflow (2^31 / 2^32)
+    parameter Integer span = if nBits >= 32 then 2147483647 else integer(2^nBits);
+    parameter Integer min_val = if not isSigned then 0 
+      else if nBits >= 32 then -2147483648 
+      else -integer(2^(nBits - 1));
+    parameter Integer max_val = if not isSigned then (if nBits >= 32 then 2147483647 else integer(2^nBits) - 1)
+      else if nBits >= 32 then 2147483647 
+      else integer(2^(nBits - 1)) - 1;
+  
+    Integer int_raw;
+  
+  equation
+    int_raw = integer(u + 0.5);
+  
+    if saturate then
+      y = min(max(int_raw, min_val), max_val);
+    else
+      if isSigned then
+        y = mod(int_raw - min_val, span) + min_val;
+      else
+        y = mod(int_raw, span);
+      end if;
+    end if;
+  
+  end RealToConfigurableInteger;
+
 
   annotation(
     uses(Modelica(version = "4.0.0"))

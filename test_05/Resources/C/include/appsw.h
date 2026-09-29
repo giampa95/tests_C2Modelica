@@ -62,10 +62,10 @@ void destructor(void);
  * no need to know the current simulation time to do its job.
  */
 void doStep(EventMaskType events,
-            double R_SWC1_value,
-            double R_SWC1_gain,
-            double *P_SWC1_valueGained,
-            double *PR_SWC2_counter);
+            int R_SWC1_value,
+            int R_SWC1_gain,
+            int *P_SWC1_valueGained,
+            int *PR_SWC2_counter);
 
 #ifdef __cplusplus
 }

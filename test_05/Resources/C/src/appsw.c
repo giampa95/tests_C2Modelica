@@ -13,15 +13,18 @@
 
 void constructor(void)
 {
-    double unusedValueGained = 0.0;
-    double unusedCounter     = 0.0;
+
+    int unusedValueGained = (int)0;
+    int unusedCounter     = (int)0;
 
     resetScheduler();
 
     /* Same behavior as doStep(), but always forcing eventR (see appsw.h
      * and scheduler_events.h): guarantees SWC1's gain and SWC2's counter
      * start from a known, reset state. */
-    doStep(EVENT_R_BIT, 0.0, 0.0, &unusedValueGained, &unusedCounter);
+    doStep(EVENT_R_BIT, (int)0, (int)0, &unusedValueGained, &unusedCounter);
+
+
 }
 
 void destructor(void)
@@ -30,15 +33,16 @@ void destructor(void)
 }
 
 void doStep(EventMaskType events,
-            double R_SWC1_value,
-            double R_SWC1_gain,
-            double *P_SWC1_valueGained,
-            double *PR_SWC2_counter)
+            int R_SWC1_value,
+            int R_SWC1_gain,
+            int *P_SWC1_valueGained,
+            int *PR_SWC2_counter)
 {
     /* The environment (whatever sits outside the App SW - here, Modelica)
      * writes its inputs directly into the global interface: this boundary
      * code is not itself a Software Component, so - unlike SWC1/SWC2 - it
      * is not expected to go through Read_* / Write_*. */
+
     gSWC1_value = (int32)R_SWC1_value;
     gSWC1_gain  = (int32)R_SWC1_gain;
 
@@ -46,6 +50,7 @@ void doStep(EventMaskType events,
      * in the order they are pushed (see scheduler_manager.c), so calling
      * Mng_event* in priority order guarantees the correct execution order
      * even when several events fire at the very same instant. */
+    
     if ((events & EVENT_R_BIT) != 0)
     {
         Mng_eventR();
@@ -58,9 +63,10 @@ void doStep(EventMaskType events,
     {
         Mng_eventClockA();
     }
-
+    
     runRunnables();
+    
 
-    *P_SWC1_valueGained = (double)gSWC1_valueGained;
-    *PR_SWC2_counter    = (double)gSWC2_counter;
+    *P_SWC1_valueGained = (int)gSWC1_valueGained;
+    *PR_SWC2_counter    = (int)gSWC2_counter;
 }

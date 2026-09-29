@@ -2,7 +2,7 @@ This document outlines key technical constraints and observed behaviors regardin
 
 1. Discrete Variable Limitations in Modelica Standard Library (MSL)
 - Limited MSL Support: While input signals to the Modelica block should ideally be declared using the discrete variability prefix, the Modelica Standard Library (MSL) offers limited standard support for this pattern in signal blocks.
-- Unused Variable Flagging: Inputs marked as discrete may fail to register as used variables by the Modelica compiler if their sole usage occurs as function arguments inside when-clauses. This can lead to unexpected compiler warnings or dropped signal dependencies.
+- In the current version, representation of variables is handled through "integer limits" in Modelica and "casting" in C. 
 
 2. Simultaneous Event Handling & Task Scheduling
 - Execution Desynchronization: In current implementation, concurrent events occurring at the exact same simulation time step are currently not processed simultaneously on the Modelica side. Instead, runnable groups associated with these concurrent events are scheduled across distinct time instances.
